@@ -58,7 +58,7 @@ pve <- pr.var / sum(pr.var)
 pve
 
 # The plot of pve explained by each component
-par(mfrow = c(1, 2))
+par(mfrow = c(1, 1))
 plot(pve, xlab = "Principal component",
           ylab = "Proportion of variance explained",
           ylim = c(0,1),
@@ -72,14 +72,29 @@ plot(cumsum(pve), xlab = "Principal component",
 
 
 
+# performing K-Means with PCs
+km_out <- kmeans(pr.out$x, centers = 2, nstart = 20)
+plot(pr.out$x[, 1:2], type = "n")
+
+text(pr.out$x[, 1], pr.out$x[, 2], labels = state.abb, col=km_out$cluster)
+
+# Finding out how many states are in each cluster
+table(km_out$cluster)
+
+# Obtaining within sum of squares using 1-10 clusters
+wss_vec <- rep(NA, 10)
+wss_vec
 
 
+for(k in 1:10){
+  km_out <- kmeans(pr.out$x, centers = k, nstart = 20)
+  wss_vec[k] <- km_out$withinss
+}
 
-
-
-
-
-
+# plot - within sum of squares with respect to k
+plot(1:10, wss_vec, xlim = c(0, 10), type = "b", col = "Blue",
+            ylab = "Within sum of squares",
+            xlab = "Number of clusters")
 
 
 
